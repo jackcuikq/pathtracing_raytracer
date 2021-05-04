@@ -19,6 +19,7 @@ set ( SOURCE_RAYTRACER
 	code/src/main.cpp
 	code/src/sphere.cpp
 	code/src/hittable_list.cpp
+	code/src/vec3.cpp
 	)
 
 add_executable(raytracer ${SOURCE_RAYTRACER} ${RAYTRACER_INC})

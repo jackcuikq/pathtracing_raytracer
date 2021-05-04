@@ -13,6 +13,7 @@
 
 #include <cmath>
 #include <iostream>
+#include "utility.h"
 
 using std::sqrt;
 using std::fabs;
@@ -60,6 +61,14 @@ class Vec3 {
             // Return true if the vector is close to zero in all dimensions.
             const auto s = 1e-8;
             return (fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
+        }
+
+        inline static Vec3 random() {
+            return Vec3(random_double(), random_double(), random_double());
+        }
+
+        inline static Vec3 random(double min, double max) {
+            return Vec3(random_double(min, max), random_double(min, max), random_double(min, max));
         }
 
     public:
@@ -129,5 +138,10 @@ inline Vec3 refract(const Vec3& uv, const Vec3& n, double etai_over_etat) {
     return r_out_perp + r_out_parallel;
 }
 
+extern Vec3 random_in_unit_sphere();
+
+extern Vec3 random_unit_vector();
+
+extern Vec3 random_in_hemisphere(const Vec3& normal);
 
 #endif
