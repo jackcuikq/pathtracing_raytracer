@@ -1,7 +1,7 @@
-#include "hittable_list.h"
+#include "hittable_object_list.h"
 
-bool hittable_list::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
-	hit_record temp;
+bool HittableObjectList::hit(const Ray& r, double t_min, double t_max, HitRecord& rec) const {
+	HitRecord temp;
 	bool hit_something = false;
 	double curr_closest = t_max;
 

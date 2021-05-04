@@ -10,8 +10,9 @@ set (RAYTRACER_INC
 	code/inc/ray.h
 	code/inc/hittable_object.h
 	code/inc/sphere.h
-	code/inc/hittable_list.h
+	code/inc/hittable_object_list.h
 	code/inc/utility.h
+	code/inc/camera.h
 	) 
 
 set ( SOURCE_RAYTRACER 

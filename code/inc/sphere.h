@@ -4,15 +4,15 @@
 #include "hittable_object.h"
 #include "vec3.h"
 
-class sphere : public hittable_object {
+class Sphere : public HittableObject {
 	public:
-		sphere() {}
-		sphere(point3 c, double r) : center(c), radius(r) {};
+		Sphere() {}
+		Sphere(Point3 c, double r) : center(c), radius(r) {};
 
-		virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override;
+		virtual bool hit(const Ray& r, double t_min, double t_max, HitRecord& rec) const override;
 
 		//members
-		point3 center;
+		Point3 center;
 		double radius;
 };
 
