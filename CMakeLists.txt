@@ -5,23 +5,24 @@ project (raytracer)
 set ( CMAKE_CXX_STANDARD 17 )
 
 set (RAYTRACER_INC
-	code/inc/colour.h
-	code/inc/vec3.h
-	code/inc/ray.h
-	code/inc/hittable_object.h
-	code/inc/sphere.h
-	code/inc/hittable_object_list.h
-	code/inc/utility.h
-	code/inc/camera.h
+	src/inc/colour.h
+	src/inc/vec3.h
+	src/inc/ray.h
+	src/inc/hittable_object.h
+	src/inc/sphere.h
+	src/inc/hittable_object_list.h
+	src/inc/utility.h
+	src/inc/camera.h
+	src/inc/material.h
 	) 
 
 set ( SOURCE_RAYTRACER 
-	code/src/main.cpp
-	code/src/sphere.cpp
-	code/src/hittable_list.cpp
-	code/src/vec3.cpp
+	src/main.cpp
+	src/sphere.cpp
+	src/hittable_list.cpp
+	src/vec3.cpp
 	)
 
 add_executable(raytracer ${SOURCE_RAYTRACER} ${RAYTRACER_INC})
 
-include_directories(code/inc)
+include_directories(src/inc)
