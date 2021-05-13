@@ -6,73 +6,11 @@
 #include "sphere.h"
 #include "camera.h"
 #include "material.h"
+#include "sample_renders.h"
 
 #include <iostream>
+#include <fstream>
 #include <chrono>
-
-HittableObjectList random_scene() {
-    HittableObjectList world;
-
-    auto ground_material = std::make_shared<Lambertian>(Colour(0.5, 0.5, 0.5));
-    world.add(std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, ground_material));
-
-    for (int a = -11; a < 11; a++) {
-        for (int b = -11; b < 11; b++) {
-            auto choose_mat = random_double();
-            Point3 center(a + 0.9 * random_double(), 0.2, b + 0.9 * random_double());
-
-            if ((center - Point3(4, 0.2, 0)).length() > 0.9) {
-                std::shared_ptr<Material> sphere_material;
-
-                if (choose_mat < 0.8) {
-                    // diffuse
-                    auto albedo = Colour::random() * Colour::random();
-                    sphere_material = std::make_shared<Lambertian>(albedo);
-                    world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
-                }
-                else if (choose_mat < 0.95) {
-                    // metal
-                    auto albedo = Colour::random(0.5, 1);
-                    sphere_material = std::make_shared<Metal>(albedo);
-                    world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
-                }
-                else {
-                    // glass
-                    sphere_material = std::make_shared<Dielectric>(1.5);
-                    world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
-                }
-            }
-        }
-    }
-
-    auto material1 = std::make_shared<Dielectric>(1.5);
-    world.add(std::make_shared<Sphere>(Point3(0, 1, 0), 1.0, material1));
-
-    auto material2 = std::make_shared<Lambertian>(Colour(0.4, 0.2, 0.1));
-    world.add(std::make_shared<Sphere>(Point3(-4, 1, 0), 1.0, material2));
-
-    auto material3 = std::make_shared<Metal>(Colour(0.7, 0.6, 0.5));
-    world.add(std::make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
-
-    return world;
-}
-
-HittableObjectList simple_scene() {
-    HittableObjectList world;
-
-    auto material_ground = std::make_shared<Lambertian>(Colour(0.5, 0.5, 0.5));
-    auto material_center = std::make_shared<Lambertian>(Colour(0.7, 0.3, 0.3));
-    // auto material_left = std::make_shared<Metal>(Colour(0.8, 0.8, 0.8));
-    auto material_left = std::make_shared<Dielectric>(1.5);
-    auto material_right = std::make_shared<Metal>(Colour(0.8, 0.6, 0.2));
-
-    world.add(std::make_shared<Sphere>(Point3(0.0, -100.5, -1.0), 100.0, material_ground));
-    world.add(std::make_shared<Sphere>(Point3(0.0, 0.0, -1.0), 0.5, material_center));
-    world.add(std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), 0.5, material_left));
-    world.add(std::make_shared<Sphere>(Point3(1.0, 0.0, -1.0), 0.5, material_right));
-
-    return world;
-}
 
 Colour ray_colour(const Ray& r, const HittableObject& world, int depth) {
     HitRecord rec;
@@ -93,15 +31,27 @@ Colour ray_colour(const Ray& r, const HittableObject& world, int depth) {
     return (1.0 - t) * Colour(1.0, 1.0, 1.0) + t * Colour(0.5, 0.7, 1.0);
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    // no file given
+    if (argc <= 1) {
+        std::cerr << "No file given" << '\n';
+        return 0;
+    }
+
+    // open file
+    std::ofstream outfile;
+    outfile.open(argv[1]);
+    if (!outfile) {
+        std::cerr << "Fail to open file for write" << '\n';
+    }
 
     const bool antialiasing = true;
 
     // Image
 
-    const double aspect_ratio = 16.0 / 9.0;
-    //const double aspect_ratio = 3.0 / 2.0;
-    const int image_width = 2560;
+    //const double aspect_ratio = 16.0 / 9.0;
+    const double aspect_ratio = 3.0 / 2.0;
+    const int image_width = 800;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int samples_per_pixel = 500;
 
@@ -109,23 +59,23 @@ int main() {
 
     // World
 
-    //auto world = random_scene();
-    auto world = simple_scene();
+    //auto world = SampleRenders::main_scene();
+    auto world = SampleRenders::simple_scene();
 
     // Camera
     
-    Point3 lookfrom(3, 3, 5); // point looking from
-    Point3 lookat(0, 0, 0); // point looking at
+    Point3 lookfrom(0, 0, 6); // point looking from
+    Point3 lookat(0, 0, -1); // point looking at
     Vec3 vup(0, 1, 0);
-    double dist_to_focus = 10.0;
-    double aperture = 0.1;
+    double dist_to_focus = 6;
+    double aperture = 0;
     double fov = 20; // lower FOV more zoomed in
 
     Camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
     // Render
 
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    outfile << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -153,13 +103,13 @@ int main() {
                     #pragma omp atomic
                     pixel_colour.e[2] += ray_col.z();
                 }
-                write_colour(std::cout, pixel_colour, samples_per_pixel);
+                write_colour(outfile, pixel_colour, samples_per_pixel);
             } else {
                 double u = double(i) / (image_width - 1);
                 double v = double(j) / (image_height - 1);
                 Ray r = cam.get_ray(u, v);                
                 Colour pixel_color = ray_colour(r, world, max_ray_depth);
-                write_colour(std::cout, pixel_color, 1);
+                write_colour(outfile, pixel_color, 1);
             }
         }
     }

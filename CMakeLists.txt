@@ -14,6 +14,7 @@ set (RAYTRACER_INC
 	src/inc/utility.h
 	src/inc/camera.h
 	src/inc/material.h
+	src/inc/sample_renders.h
 	) 
 
 set ( SOURCE_RAYTRACER 
