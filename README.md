@@ -1,7 +1,6 @@
 # Path-tracing Raytracer
 
-This is a brute force monte carlo pathtracer made with C++ that executes on the CPU. Recreation of physical effects is done using simple linear algebra and physics 
-(no API's or libraries used).
+This is a brute force monte carlo pathtracer made with C++. Recreation of physical effects is done using simple linear algebra and physics (no API's or libraries used). Rendering only utilizes the CPU as images are rendered through calculations.
 
 ![a sample render](https://github.com/jackcuikq/simple_raytracer/blob/master/renders/main.jpg)
 
@@ -25,9 +24,9 @@ The materials implemented are Dielectric (refractive), Lambertian (matte) and Me
 
 (From left to right: Dielectric, Lambertian, Metal)
 
-Dielectrics are clear materials like water or glass where when a light ray hits them, it splits into a reflected and refracted ray. In this implementation, a ray is refracted when possible according to Snell's law, when there is no solution the ray must reflect. Also, Schlick's approximation is used for approximating when to reflect.
+Dielectrics are clear materials like water or glass where when a light ray hits them, it splits into a reflected and refracted ray. In this implementation, only a single ray is scattered. A ray is refracted when possible according to Snell's law and when there is no solution the ray must reflect. Also, Schlick's approximation is used for approximating when to reflect.
 
-Lambertian diffusion is done by picking a random vector in the hemisphere of the normal of the hit point and use it as the scattered ray.
+Lambertian diffusion is done by picking a random vector in the hemisphere of the normal of the hit point and using it as the scattered ray.
 
 For metals the ray isn't randomly scattered, it is reflected (using vector math).
 
