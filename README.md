@@ -24,7 +24,7 @@ The materials implemented are Dielectric (refractive), Lambertian (matte) and Me
 
 (From left to right: Dielectric, Lambertian, Metal)
 
-Dielectrics are clear materials like water or glass where when a light ray hits them, it splits into a reflected and refracted ray. In this implementation, only a single ray is scattered. A ray is refracted when possible according to Snell's law and when there is no solution the ray must reflect. Also, Schlick's approximation is used for approximating when to reflect.
+Dielectrics are clear materials like water or glass where when a light ray hits them, it splits into a reflected and refracted ray. In this implementation, only a single ray is scattered and it is chosen randomly if a ray reflects or refracts. A ray is refracted when possible according to Snell's law and when there is no solution the ray must reflect. Also, Schlick's approximation is used for approximating when to reflect.
 
 Lambertian diffusion is done by picking a random vector in the hemisphere of the normal of the hit point and using it as the scattered ray.
 
